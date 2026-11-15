@@ -192,9 +192,15 @@ function nextQuestion(){
 
  $("answer").addEventListener("input",()=>{
   if(!active)return;
-  const typed = $("answer").value.toLowerCase();
+  let typed = $("answer").value.toLowerCase();
   const target = current[1];
   const spans = $("romaji").querySelectorAll("span");
+  
+  // 間違えた文字を自動で消す
+  if(typed.length > 0 && !target.startsWith(typed)){
+    typed = typed.slice(0, -1); // 最後の1文字を消す
+    $("answer").value = typed;
+  }
   
   total = typed.length;
   let matched = 0;
@@ -221,8 +227,6 @@ function nextQuestion(){
     updateStats();
     $("message").textContent = "正解！";
     nextQuestion();
-  } else if(!target.startsWith(typed)){
-    $("message").textContent = "文字が違うよ！";
   } else {
     $("message").textContent = "入力してね！";
   }
