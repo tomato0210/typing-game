@@ -176,26 +176,19 @@ function startGame(){
 }
 
 function nextQuestion(){
- current=questions[Math.floor(Math.random()*questions.length)];
- $("japanese").textContent=current[0];
- $("romaji").textContent=current[1];
- $("answer").value="";
- $("message").textContent="入力してね！";
- $("answer").focus();
+  current=questions[Math.floor(Math.random()*questions.length)];
+  $("japanese").textContent=current[0];
+  
+  // ローマ字を1文字ずつspanにする
+  const romaji = current[1];
+  $("romaji").innerHTML = [...romaji].map(c => 
+    `<span class="waiting">${c}</span>`
+  ).join("");
+  
+  $("answer").value="";
+  $("message").textContent="入力してね！";
+  $("answer").focus();
 }
-
-$("answer").addEventListener("input",()=>{
- if(!active)return;
- const typed=$("answer").value.toLowerCase();
- const target=current[1];
- total=typed.length;
- let matched=0;
- for(let i=0;i<typed.length;i++){
-  if(typed[i]===target[i])matched++;
- }
- correct=matched;
- $("accuracy").textContent=total?
- Math.round(correct/total*100)+"%":"100%";
 
  if(typed===target){
   score+=target.length*10;
