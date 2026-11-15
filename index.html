@@ -190,15 +190,42 @@ function nextQuestion(){
   $("answer").focus();
 }
 
- if(typed===target){
-  score+=target.length*10;
-  words++;
-  updateStats();
-  $("message").textContent="正解！";
-  nextQuestion();
- }else if(!target.startsWith(typed)){
-  $("message").textContent="文字が違うよ！";
- }
+ $("answer").addEventListener("input",()=>{
+  if(!active)return;
+  const typed = $("answer").value.toLowerCase();
+  const target = current[1];
+  const spans = $("romaji").querySelectorAll("span");
+  
+  total = typed.length;
+  let matched = 0;
+  
+  // 文字ごとに色を更新
+  spans.forEach((span, i) => {
+    span.className = "waiting";
+    if(i < typed.length){
+      if(typed[i] === target[i]){
+        span.className = "typed";
+        matched++;
+      } else {
+        span.className = "wrong";
+      }
+    }
+  });
+  
+  correct = matched;
+  $("accuracy").textContent = total ? Math.round(correct/total*100)+"%" : "100%";
+  
+  if(typed === target){
+    score += target.length * 10;
+    words++;
+    updateStats();
+    $("message").textContent = "正解！";
+    nextQuestion();
+  } else if(!target.startsWith(typed)){
+    $("message").textContent = "文字が違うよ！";
+  } else {
+    $("message").textContent = "入力してね！";
+  }
 });
 
 function updateStats(){
